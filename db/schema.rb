@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_30_130427) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_02_091401) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_30_130427) do
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
   end
 
+  create_table "addresses", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title"
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "postal_code"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_addresses_on_user_id"
+  end
+
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -38,6 +51,134 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_30_130427) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "cart_items", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "quantity"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_cart_items_on_product_id"
+    t.index ["user_id"], name: "index_cart_items_on_user_id"
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "parent_category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_categories_on_deleted_at"
+    t.index ["parent_category_id"], name: "index_categories_on_parent_category_id"
+  end
+
+  create_table "category_products", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_category_products_on_category_id"
+    t.index ["product_id"], name: "index_category_products_on_product_id"
+  end
+
+  create_table "images", force: :cascade do |t|
+    t.string "url"
+    t.string "name"
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_images_on_product_id"
+  end
+
+  create_table "order_item_vouchers", force: :cascade do |t|
+    t.bigint "voucher_id", null: false
+    t.bigint "order_product_id", null: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_product_id"], name: "index_order_item_vouchers_on_order_product_id"
+    t.index ["voucher_id"], name: "index_order_item_vouchers_on_voucher_id"
+  end
+
+  create_table "order_products", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "quantity"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_products_on_order_id"
+    t.index ["product_id"], name: "index_order_products_on_product_id"
+  end
+
+  create_table "order_vouchers", force: :cascade do |t|
+    t.bigint "voucher_id", null: false
+    t.bigint "order_id", null: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_vouchers_on_order_id"
+    t.index ["voucher_id"], name: "index_order_vouchers_on_voucher_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.string "status", default: "placed"
+    t.float "grand_total"
+    t.float "final_total"
+    t.bigint "user_id", null: false
+    t.text "delivery_address"
+    t.text "payment_address"
+    t.string "payment_method"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.float "amount"
+    t.string "payment_method"
+    t.string "status", default: "pending"
+    t.string "currency", default: "PKR"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_payments_on_order_id"
+  end
+
+  create_table "product_sizes", force: :cascade do |t|
+    t.float "price"
+    t.string "currency"
+    t.integer "quantity"
+    t.bigint "size_id", null: false
+    t.bigint "product_id", null: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_product_sizes_on_product_id"
+    t.index ["size_id"], name: "index_product_sizes_on_size_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name", null: false
+    t.float "discount_percentage", default: 0.0
+    t.string "description"
+    t.integer "quantity"
+    t.boolean "discontinued", default: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "sizes", force: :cascade do |t|
+    t.string "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -55,4 +196,33 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_30_130427) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "vouchers", force: :cascade do |t|
+    t.string "token"
+    t.string "applied_type"
+    t.string "discount_type"
+    t.float "discount_value"
+    t.float "cap_amount"
+    t.boolean "discontinued", default: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "addresses", "users"
+  add_foreign_key "cart_items", "products"
+  add_foreign_key "cart_items", "users"
+  add_foreign_key "categories", "categories", column: "parent_category_id"
+  add_foreign_key "category_products", "categories"
+  add_foreign_key "category_products", "products"
+  add_foreign_key "images", "products"
+  add_foreign_key "order_item_vouchers", "order_products"
+  add_foreign_key "order_item_vouchers", "vouchers"
+  add_foreign_key "order_products", "orders"
+  add_foreign_key "order_products", "products"
+  add_foreign_key "order_vouchers", "orders"
+  add_foreign_key "order_vouchers", "vouchers"
+  add_foreign_key "orders", "users"
+  add_foreign_key "payments", "orders"
+  add_foreign_key "product_sizes", "products"
+  add_foreign_key "product_sizes", "sizes"
 end

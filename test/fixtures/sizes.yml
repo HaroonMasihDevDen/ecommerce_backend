@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  deleted_at: 2024-08-02 12:41:27
+
+two:
+  name: MyString
+  deleted_at: 2024-08-02 12:41:27
