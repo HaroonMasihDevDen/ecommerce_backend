@@ -1,5 +1,6 @@
 
 class Users::SessionsController < Devise::SessionsController
+  # before_action :authenticate_user_custom, only: [:validate_token]
   respond_to :json
   private
   def respond_with(current_user, _opts = {})
@@ -30,6 +31,30 @@ class Users::SessionsController < Devise::SessionsController
         status: 401,
         message: "Couldn't find an active session."
       }, status: :unauthorized
+    end
+  end
+
+  def validate_token
+    # Token is validated by the `authenticate_user!` method
+    render json: { valid: true }, status: :ok
+  end
+
+  private
+
+  def authenticate_user_custom
+    token = request.headers['Authorization']&.split(' ')&.last
+    if token
+      begin
+        jwt_payload = JWT.decode(token, Rails.application.credentials.devise_jwt_secret_key!).first
+        @current_user = User.find(jwt_payload['sub'])
+        render json: { valid: true }, status: :ok
+      rescue JWT::DecodeError => e
+        render json: { valid: false, errors: [e.message] }, status: :unauthorized
+      rescue ActiveRecord::RecordNotFound
+        render json: { valid: false, errors: ['User not found'] }, status: :unauthorized
+      end
+    else
+      render json: { valid: false, errors: ['Token missing'] }, status: :unauthorized
     end
   end
 end
