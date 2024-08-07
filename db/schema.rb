@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_02_091401) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_07_063818) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,14 +93,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_02_091401) do
     t.index ["product_id"], name: "index_images_on_product_id"
   end
 
-  create_table "order_item_vouchers", force: :cascade do |t|
+  create_table "order_product_vouchers", force: :cascade do |t|
     t.bigint "voucher_id", null: false
     t.bigint "order_product_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["order_product_id"], name: "index_order_item_vouchers_on_order_product_id"
-    t.index ["voucher_id"], name: "index_order_item_vouchers_on_voucher_id"
+    t.index ["order_product_id"], name: "index_order_product_vouchers_on_order_product_id"
+    t.index ["voucher_id"], name: "index_order_product_vouchers_on_voucher_id"
   end
 
   create_table "order_products", force: :cascade do |t|
@@ -159,6 +159,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_02_091401) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["product_id", "size_id"], name: "index_product_sizes_on_product_id_and_size_id"
     t.index ["product_id"], name: "index_product_sizes_on_product_id"
     t.index ["size_id"], name: "index_product_sizes_on_size_id"
   end
@@ -167,7 +168,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_02_091401) do
     t.string "name", null: false
     t.float "discount_percentage", default: 0.0
     t.string "description"
-    t.integer "quantity"
     t.boolean "discontinued", default: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -215,8 +215,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_02_091401) do
   add_foreign_key "category_products", "categories"
   add_foreign_key "category_products", "products"
   add_foreign_key "images", "products"
-  add_foreign_key "order_item_vouchers", "order_products"
-  add_foreign_key "order_item_vouchers", "vouchers"
+  add_foreign_key "order_product_vouchers", "order_products"
+  add_foreign_key "order_product_vouchers", "vouchers"
   add_foreign_key "order_products", "orders"
   add_foreign_key "order_products", "products"
   add_foreign_key "order_vouchers", "orders"
