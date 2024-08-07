@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  voucher: one
+  order: one
+  deleted_at: 2024-08-02 14:07:48
+
+two:
+  voucher: two
+  order: two
+  deleted_at: 2024-08-02 14:07:48
