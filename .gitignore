@@ -32,3 +32,9 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 .DS_Store
+.DS_Store*
+*DS_Store*
+
+/config/credentials/development.key
+.byebug_history
+.byebug*
