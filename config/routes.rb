@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   get 'validate_token', to: 'token_auth#validate'
 
   resources :categories
+  resources :products
 
 
 end
