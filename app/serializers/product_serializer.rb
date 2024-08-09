@@ -4,15 +4,19 @@ class ProductSerializer < ActiveModel::Serializer
               :name,
               :description,
               :discountPercentage,
-              :price
-
-  def price
-    puts "this is the product_size: #{object.product_sizes.to_a}"
-    object.product_sizes.where("quantity > ?",0).order(:price).first&.price
-  end
+              :price,
+              :sizes
 
   def discountPercentage
     object.discount_percentage
   end
 
+  def sizes
+    puts "this is instance_options:#{instance_options}"
+    if instance_options[:include_sizes]
+        object.product_sizes.map do |size|
+        ProductSizeSerializer.new(size, scope: scope, root: false)
+      end
+    end
+  end
 end
