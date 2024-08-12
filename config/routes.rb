@@ -14,5 +14,10 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   get 'validate_token', to: 'token_auth#validate'
 
+  resources :categories
+  resources :products
+  resources :category_products
+
+
 
 end
