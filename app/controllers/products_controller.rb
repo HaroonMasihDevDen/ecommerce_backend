@@ -1,7 +1,8 @@
 class ProductsController < ApplicationController
 
   def index
-    products = Product.where(deleted_at: nil)
+    productWithSizeQuantity=ProductSize.where('quantity > ?',0).pluck(:product_id).uniq
+    products = Product.where(deleted_at: nil).where(id: productWithSizeQuantity)
     render json: products ,each_serializer: ProductSerializer
   end
 
