@@ -1,7 +1,7 @@
 class TokenAuthController < ApplicationController
-  before_action :authenticate_user_from_token!
 
-  # GET /validate_token
+  include Authenticatable
+
   def validate
     if @current_user
       render json: {
@@ -13,7 +13,7 @@ class TokenAuthController < ApplicationController
         }
       }, status: :ok
     else
-      if @missing_auth_token ==true
+      if @is_missing_auth_token
         render json: { status: 401, message: 'missing token' }, status: :unauthorized
       else
         render json: { status: 401, message: 'Invalid or expired token' }, status: :unauthorized
@@ -21,22 +21,4 @@ class TokenAuthController < ApplicationController
     end
   end
 
-  private
-
-  def authenticate_user_from_token!
-    token = request.headers['Authorization']&.split(' ')&.last
-    if token
-      begin
-        jwt_payload = JWT.decode(token, Rails.application.credentials.devise_jwt_secret_key!).first
-        @current_user = User.find(jwt_payload['sub'])
-      rescue JWT::DecodeError, ActiveRecord::RecordNotFound
-        @current_user = nil
-      end
-    else
-      begin
-       @current_user = nil
-       @missing_auth_token = true
-      end
-    end
-  end
 end
