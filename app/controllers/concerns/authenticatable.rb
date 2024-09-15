@@ -12,9 +12,14 @@ module Authenticatable
     if token
       begin
         jwt_payload = JWT.decode(token, Rails.application.credentials.devise_jwt_secret_key!).first
+        if jwt_payload == nil
+          @current_user = nil
+          @is_missing_auth_token = false
+        end
         @current_user = User.find(jwt_payload['sub'])
       rescue JWT::DecodeError, ActiveRecord::RecordNotFound
         @current_user = nil
+        @is_missing_auth_token = false
       end
     else
       begin

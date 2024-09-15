@@ -1,7 +1,7 @@
 class CategoriesController < ApplicationController
 
   def index
-    categories = Category.where(parent_category_id: nil)
+    categories = Category.where(deleted_at: nil)
     render json: categories, each_serializer: CategorySerializer
   end
 

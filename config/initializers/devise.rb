@@ -322,7 +322,7 @@ Devise.setup do |config|
     jwt.request_formats = {
       user: [:json]
     }
-    jwt.expiration_time = 30.minutes.to_i
+    jwt.expiration_time = 55.minutes.to_i
 
   end
 end

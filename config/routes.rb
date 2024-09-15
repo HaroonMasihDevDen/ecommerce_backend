@@ -16,8 +16,14 @@ Rails.application.routes.draw do
 
   resources :categories
   resources :products
-  resources :category_products
+  resources :category_products do
+    collection do
+      get :'category_products_with_multiple_category_ids', to: 'category_products#category_products_with_multiple_category_ids'
+    end
+  end
   resources :cart_items
+  resources :vouchers
+  post 'validate_voucher', to: 'vouchers#validate'
 
 
 
