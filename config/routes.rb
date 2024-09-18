@@ -15,7 +15,11 @@ Rails.application.routes.draw do
   get 'validate_token', to: 'token_auth#validate'
 
   resources :categories
-  resources :products
+  resources :products do
+    collection do
+      get 'search', to: 'products#search'
+    end
+  end
   resources :category_products do
     collection do
       get :'category_products_with_multiple_category_ids', to: 'category_products#category_products_with_multiple_category_ids'
@@ -24,8 +28,5 @@ Rails.application.routes.draw do
   resources :cart_items
   resources :vouchers
   post 'validate_voucher', to: 'vouchers#validate'
-
-
-
 
 end

@@ -58,3 +58,5 @@ gem "rack-cors"
 gem 'devise-jwt'
 gem 'jsonapi-serializer'
 gem 'active_model_serializers'
+
+gem "ransack", "~> 4.2"

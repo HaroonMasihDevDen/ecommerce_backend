@@ -10,4 +10,11 @@ class ProductsController < ApplicationController
     product = Product.find(params[:id])
     render json: ProductSerializer.new(product, include_sizes: true).as_json
   end
+
+  def search
+    query = params[:query]
+    @products = Product.ransack(name_cont: query, description_cont: query).result
+
+    render json: @products, each_serializer: ProductSerializer , status: :ok
+  end
 end
