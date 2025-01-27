@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :products do
     collection do
       get 'search', to: 'products#search'
+      get 'filter', to: 'products#filter'
     end
   end
   resources :category_products do
