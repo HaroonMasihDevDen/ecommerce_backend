@@ -1,6 +1,6 @@
 
 class Users::SessionsController < Devise::SessionsController
-  # before_action :authenticate_user_custom, only: [:validate_token]
+  before_action :authenticate_user_custom, only: [:validate_token]
   respond_to :json
   private
   def respond_with(current_user, _opts = {})

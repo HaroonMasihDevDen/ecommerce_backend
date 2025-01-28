@@ -12,7 +12,7 @@ ActiveAdmin.register Category do
     id_column
     column :name
     column :description
-    column :parent_category_id
+    column :parent_category
     actions
   end
 
@@ -29,7 +29,7 @@ ActiveAdmin.register Category do
     attributes_table do
       row :name
       row :description
-      row :parent_category_id
+      row :parent_category
     end
   end
 end

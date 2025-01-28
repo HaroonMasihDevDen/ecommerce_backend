@@ -1,5 +1,4 @@
-Rails.application.routes.draw do
-  get 'token_auth/validate'
+Rails.application.routes.draw do  
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
@@ -9,8 +8,11 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     registrations: 'users/registrations'
   }
-  devise_for :admin_users, ActiveAdmin::Devise.config
+
+  devise_for :admin_users, ActiveAdmin::Devise.config.merge(path: 'admin', path_names: { sign_in: 'login' })
+
   ActiveAdmin.routes(self)
+
   get "up" => "rails/health#show", as: :rails_health_check
   get 'validate_token', to: 'token_auth#validate'
 
@@ -29,5 +31,6 @@ Rails.application.routes.draw do
   resources :cart_items
   resources :vouchers
   post 'validate_voucher', to: 'vouchers#validate'
+  get 'token_auth/validate'
 
 end

@@ -11,8 +11,42 @@ ActiveAdmin.register Product do
                 :discount_percentage,
                 :description,
                 :discontinued,
-                { category_ids: [] }
+                { category_ids: [] },
+                { images: [] }
 
+  controller do
+    def create
+      @product = Product.new(permitted_params[:product])
+
+      if params[:product][:images].present?
+        params[:product][:images].each do |image|
+          @product.images.attach(image)
+        end
+      end
+
+      if @product.save
+        redirect_to admin_product_path(@product), notice: 'Product was successfully created.'
+      else
+        render :new, alert: 'Failed to create product.'
+      end
+    end
+
+    def update
+      @product = Product.find(params[:id])
+
+      if params[:product][:images].present?
+        params[:product][:images].each do |image|
+          @product.images.attach(image)
+        end
+      end
+
+      if @product.update(permitted_params[:product].except(:images))
+        redirect_to admin_product_path(@product), notice: 'Product was successfully updated.'
+      else
+        render :edit, alert: 'Failed to update product.'
+      end
+    end
+  end
 
   index do
     selectable_column
@@ -31,12 +65,23 @@ ActiveAdmin.register Product do
       f.input :description
       f.input :discount_percentage
       f.input :discontinued
+      
+      # Categories section
       f.inputs 'Categories' do
-        div :class => "categories_list" do
-         f.input :categories, as: :check_boxes , collection: Category.all end
+        div class: "categories_list" do
+          f.input :categories, 
+                  as: :check_boxes, 
+                  collection: Category.all.map { |c| [c.name, c.id] }
         end
       end
 
+      f.input :images, 
+        as: :file, 
+        input_html: { 
+          multiple: true,
+          accept: 'image/*'
+        }
+    end
     f.actions
   end
 
@@ -54,13 +99,21 @@ ActiveAdmin.register Product do
       end
     end
 
-    # Display the associated CategoryProduct records if needed
     panel 'Category Products' do
       table_for(product.category_products) do
         column :category
         column :product
       end
     end
-  end
 
+    panel 'Images' do
+      div class: 'product-images-flex' do
+        product.images.each do |image|
+          div class: 'image-preview' do
+            image_tag(url_for(image), size: '100x100')
+          end
+        end
+      end
+    end
+  end
 end
