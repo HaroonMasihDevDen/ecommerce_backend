@@ -56,6 +56,11 @@ ActiveAdmin.register Product do
     column :discount_percentage
     column :discontinued
     column :deleted_at
+    column :images do |product|
+      if product.images.attached?
+        image_tag(url_for(product.images.first), size: '50x60')
+      end
+    end
     actions
   end
 
@@ -84,6 +89,12 @@ ActiveAdmin.register Product do
     f.actions
   end
 
+  member_action :delete_image, method: :delete do
+    image = ActiveStorage::Attachment.find(params[:image_id])
+    image.purge
+    redirect_back(fallback_location: admin_product_path(resource), notice: 'Image was successfully deleted')
+  end
+
   show do
     attributes_table do
       row :name
@@ -109,7 +120,16 @@ ActiveAdmin.register Product do
       div class: 'product-images-flex' do
         product.images.each do |image|
           div class: 'image-preview' do
-            image_tag(url_for(image), size: '100x100')
+            div class: 'image-container' do
+              image_tag(url_for(image), size: '100x100')
+            end
+            div class: 'delete-button' do
+              link_to 'Delete', 
+                delete_image_admin_product_path(product, image_id: image.id),
+                method: :delete,
+                data: { confirm: 'Are you sure you want to delete this image?' },
+                class: 'delete-image-button'
+            end
           end
         end
       end

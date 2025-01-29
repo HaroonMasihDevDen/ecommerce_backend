@@ -33,7 +33,7 @@ class Product < ApplicationRecord
 
   def correct_image_type
     images.each do |image|
-      unless image.content_type.in?(%w[image/png image/jpg image/jpeg])
+      unless image.content_type.in?(%w[image/png image/jpg image/jpeg image/webp])
         errors.add(:images, "must be a PNG, JPG, or JPEG")
       end
     end

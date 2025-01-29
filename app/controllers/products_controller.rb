@@ -24,16 +24,21 @@ class ProductsController < ApplicationController
     min_price = params[:min_price]
     max_price = params[:max_price]
     categories = params[:categories]
-    products = Product.active.ransack(
-      product_sizes_price_gteq: min_price.to_i,
-      product_sizes_price_lteq: max_price.to_i,
-      category_products_category_id_in: categories,
-      sizes_key_in: sizes
-    ).result(distinct: true)
 
-    products = products.joins(:product_sizes) unless sizes.blank?
-    products = products.joins(:category_products) unless categories.blank?
-    products = products.joins(:sizes) unless (max_price.blank? && min_price.blank?)
+    if sizes.blank? && min_price.blank? && max_price.blank? && categories.blank?
+      products = Product.active
+    else
+      products = Product.active.ransack(
+        product_sizes_price_gteq: min_price.to_i,
+        product_sizes_price_lteq: max_price.to_i,
+        category_products_category_id_in: categories,
+        sizes_key_in: sizes
+      ).result(distinct: true)
+
+      products = products.joins(:product_sizes) unless sizes.blank?
+      products = products.joins(:category_products) unless categories.blank?
+      products = products.joins(:sizes) unless (max_price.blank? && min_price.blank?)
+    end
 
     render json: products, each_serializer: ProductSerializer , status: :ok
   end
