@@ -65,8 +65,7 @@ ActiveAdmin.register Product do
       f.input :description
       f.input :discount_percentage
       f.input :discontinued
-      
-      # Categories section
+
       f.inputs 'Categories' do
         div class: "categories_list" do
           f.input :categories, 

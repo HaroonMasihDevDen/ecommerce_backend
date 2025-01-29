@@ -14,11 +14,8 @@ class ProductSerializer < ActiveModel::Serializer
   end
 
   def sizes
-    if instance_options[:include_sizes]
-
-      object.product_sizes.map do |size|
+    object.product_sizes.map do |size|
       ProductSizeSerializer.new(size, scope: scope, root: false)
-      end
     end
   end
 

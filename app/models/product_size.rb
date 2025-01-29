@@ -13,4 +13,7 @@ class ProductSize < ApplicationRecord
   }
   validates :product_id, uniqueness: { scope: :size_id, message: "product and size combination must be unique" }
 
+  def self.ransackable_attributes(auth_object = nil)
+    %w[id product_id size_id price currency quantity created_at updated_at]
+  end
 end

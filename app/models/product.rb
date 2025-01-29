@@ -1,5 +1,4 @@
 class Product < ApplicationRecord
-  include ::Ransackable
 
   has_many :category_products, dependent: :destroy
   has_many :categories, through: :category_products
@@ -12,6 +11,7 @@ class Product < ApplicationRecord
   
   validate :correct_image_type
   validate :acceptable_image_size
+  validates :images, presence: true
   validates :name , presence: true, uniqueness: true
   validates :description, presence: true
   validates :discount_percentage, numericality: {
@@ -24,7 +24,7 @@ class Product < ApplicationRecord
     product_sizes.where('quantity > ?',0).order(:price).first&.price
   end
 
-  scope :not_deleted, -> { where(deleted_at: nil) }
+  scope :active, -> { where(discontinued: false).where(deleted_at: nil) }
   scope :include_size_titles, ->(size_titles) {
     joins(:sizes).where(sizes: { name: size_titles }).distinct
   }
@@ -45,5 +45,13 @@ class Product < ApplicationRecord
         errors.add(:images, "should be less than 5MB")
       end
     end
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[id product_id category_id name description discount_percentage discontinued created_at updated_at]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[category_products categories product_sizes sizes cart_items orders]
   end
 end
