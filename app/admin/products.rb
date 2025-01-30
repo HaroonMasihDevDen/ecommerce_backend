@@ -72,11 +72,12 @@ ActiveAdmin.register Product do
       f.input :discontinued
 
       f.inputs 'Categories' do
-        div class: "categories_list" do
-          f.input :categories, 
-                  as: :check_boxes, 
-                  collection: Category.all.map { |c| [c.name, c.id] }
-        end
+        f.input :categories, 
+                as: :check_boxes, 
+                collection: Category.order(:name),
+                required: true,  
+                wrapper_html: { class: 'categories-wrapper' },
+                input_html: { class: 'categories-checkbox-list' }
       end
 
       f.input :images, 
@@ -121,7 +122,7 @@ ActiveAdmin.register Product do
         product.images.each do |image|
           div class: 'image-preview' do
             div class: 'image-container' do
-              image_tag(url_for(image), size: '100x100')
+              image_tag(url_for(image), size: '200x250')
             end
             div class: 'delete-button' do
               link_to 'Delete', 

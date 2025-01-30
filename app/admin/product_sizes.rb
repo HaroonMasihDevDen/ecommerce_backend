@@ -34,8 +34,8 @@ ActiveAdmin.register ProductSize do
 
   form do |f|
     f.inputs do
-      f.input :product, as: :select, collection: Product.all.collect { |p| [p.name, p.id] }
-      f.input :size, as: :select, collection: Size.all.collect { |s| [s.name, s.id] }
+      f.input :product, as: :select, collection: Product.order(created_at: :desc).collect { |p| [p.name, p.id] }
+      f.input :size, as: :select, collection: Size.order(:order).collect { |s| [s.name, s.id] }
       f.input :price
       f.input :currency
       f.input :quantity

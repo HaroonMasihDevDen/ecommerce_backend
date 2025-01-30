@@ -4,7 +4,6 @@ class Users::SessionsController < Devise::SessionsController
   respond_to :json
   private
   def respond_with(current_user, _opts = {})
-    # byebug
     render json: {
       status: {
         code: 200, message: 'Logged in successfully.',
@@ -13,7 +12,6 @@ class Users::SessionsController < Devise::SessionsController
     }, status: :ok
   end
   def respond_to_on_destroy
-    # byebug
     if request.headers['Authorization'].present? && request.headers['Authorization'].to_s != 'undefined'
       jwt_payload = JWT.decode(request.headers['Authorization'].split(' ').last, Rails.application.credentials.devise_jwt_secret_key!).first
       current_user = User.find(jwt_payload['sub'])

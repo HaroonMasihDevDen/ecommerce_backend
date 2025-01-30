@@ -20,14 +20,14 @@ class Product < ApplicationRecord
   }
   validates :discontinued, inclusion: { in: [true, false] }
 
-  def price
-    product_sizes.where('quantity > ?',0).order(:price).first&.price
-  end
-
   scope :active, -> { where(discontinued: false).where(deleted_at: nil) }
   scope :include_size_titles, ->(size_titles) {
     joins(:sizes).where(sizes: { name: size_titles }).distinct
   }
+
+  def price
+    product_sizes.where('quantity > ?',0).order(:price).first&.price
+  end
 
   private
 
