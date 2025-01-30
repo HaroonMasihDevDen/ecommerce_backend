@@ -14,8 +14,13 @@ class ProductsController < ApplicationController
 
   def search
     query = params[:query]
-    products = Product.active.where(deleted_at: nil).ransack(name_cont: query, description_cont: query).result
-
+    products = Product.active
+                 .ransack(
+                   m: 'or',
+                   name_eq: query,
+                   name_cont: query,
+                   description_cont: query
+                 ).result
     render json: products, each_serializer: ProductSerializer , status: :ok
   end
 
@@ -29,8 +34,8 @@ class ProductsController < ApplicationController
       products = Product.active
     else
       products = Product.active.ransack(
-        product_sizes_price_gteq: min_price.to_i,
-        product_sizes_price_lteq: max_price.to_i,
+        product_sizes_price_gteq: min_price,
+        product_sizes_price_lteq: max_price,
         category_products_category_id_in: categories,
         sizes_key_in: sizes
       ).result(distinct: true)

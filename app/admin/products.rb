@@ -2,6 +2,7 @@ ActiveAdmin.register Product do
 
   filter :name
   filter :discount_percentage
+  filter :categories
   filter :description
   filter :discontinued
   filter :created_at
@@ -52,6 +53,7 @@ ActiveAdmin.register Product do
     selectable_column
     id_column
     column :name
+    column :categories
     column :description
     column :discount_percentage
     column :discontinued

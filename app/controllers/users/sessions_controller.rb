@@ -2,7 +2,7 @@
 class Users::SessionsController < Devise::SessionsController
   before_action :authenticate_user_custom, only: [:validate_token]
   respond_to :json
-  private
+
   def respond_with(current_user, _opts = {})
     render json: {
       status: {
@@ -37,9 +37,8 @@ class Users::SessionsController < Devise::SessionsController
     render json: { valid: true }, status: :ok
   end
 
-  private
-
   def authenticate_user_custom
+    byebug
     token = request.headers['Authorization']&.split(' ')&.last
     if token
       begin
